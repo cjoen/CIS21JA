@@ -1,0 +1,243 @@
+Microsoft (R) Macro Assembler (x64) Version 11.00.61030.0   01/13/14 15:59:36
+..\..\ch10\64-bit\RowSum.asm				     Page 1 - 1
+
+
+				; 64-bit Row Sum Calculation         (RowSum.asm)
+
+				Comment !
+				Tests the mCalc_row_sum macro.
+				!
+
+				ExitProcess PROTO
+				WriteHex64 PROTO
+				Crlf PROTO
+
+				;------------------------------------------------------------
+				mCalc_row_sum MACRO index, arrayOffset, rowSize, eltType
+				; Calculates the sum of a row in a two-dimensional array.
+				;
+				; Receives: row index, offset of the array, number of bytes
+				; in each table row, and the array type (BYTE, WORD, or DWORD).
+				; Returns: RAX = sum.
+				;-------------------------------------------------------------
+				LOCAL L1
+					push rbx		; save changed regs
+					push rcx
+					push rsi
+
+				; set up the required registers
+					mov rax,index
+					mov rbx,arrayOffset
+					mov rcx,rowSize
+
+				; calculate the row offset.
+					mul rcx							; row index * row size
+					add rbx,rax						; row offset
+
+				; prepare the loop counter.
+					shr rcx,(TYPE eltType / 2)		; byte=0, word=1, dword=2
+
+				; initialize the accumulator and column indexes
+					mov rax,0						; accumulator
+					mov rsi,0						; column index
+
+				L1: 
+					IFIDNI <eltType>, <DWORD>
+						mov	  edx,eltType PTR[rbx + rsi*(TYPE eltType)]
+					ELSE
+						movzx edx,eltType PTR[rbx + rsi*(TYPE eltType)]
+					ENDIF
+
+					add rax,rdx						; add to accumulator
+					inc rsi
+					loop L1
+
+					pop rsi							; restore changed regs
+					pop rcx
+					pop rbx
+				ENDM
+
+
+ 00000000			.data
+ 00000000 10 20 30 40 50	tableB BYTE 10h, 20h, 30h, 40h, 50h
+ 00000005 = 00000005		RowSizeB = ($ - tableB)
+ 00000005  00000060			DWORD 60h, 70h, 80h, 90h, 0A0h
+	   00000070
+	   00000080
+	   00000090
+	   000000A0
+ 00000019  000000B0			DWORD 0B0h, 0C0h, 0D0h, 0E0h, 0F0h
+	   000000C0
+	   000000D0
+	   000000E0
+	   000000F0
+
+ 0000002D 0010 0020 0030	tableW WORD 10h, 20h, 30h, 40h, 50h
+	   0040 0050
+ 00000037 = 0000000A		RowSizeW = ($ - tableW)
+ 00000037  00000060			DWORD 60h, 70h, 80h, 90h, 0A0h
+	   00000070
+	   00000080
+	   00000090
+	   000000A0
+ 0000004B  000000B0			DWORD 0B0h, 0C0h, 0D0h, 0E0h, 0F0h
+	   000000C0
+	   000000D0
+	   000000E0
+	   000000F0
+
+ 0000005F 00000010		tableD DWORD 10h, 20h, 30h, 40h, 50h
+	   00000020
+	   00000030
+	   00000040
+	   00000050
+ 00000073 = 00000014		RowSizeD = ($ - tableD)
+ 00000073  00000060			DWORD 60h, 70h, 80h, 90h, 0A0h
+	   00000070
+	   00000080
+	   00000090
+	   000000A0
+ 00000087  000000B0			DWORD 0B0h, 0C0h, 0D0h, 0E0h, 0F0h
+	   000000C0
+	   000000D0
+	   000000E0
+	   000000F0
+
+ 0000009B			index QWORD ?
+	   0000000000000000
+
+
+ 00000000			.code
+ 00000000			main PROC
+
+				; Demonstrate Base-Index mode:
+
+					mCalc_row_sum index, OFFSET tableB, RowSizeB, BYTE
+ 00000000  53		     1		push rbx		; save changed regs
+ 00000001  51		     1		push rcx
+ 00000002  56		     1		push rsi
+ 00000003  48/ 8B 05	     1		mov rax,index
+	   0000009B R
+ 0000000A  48/ BB	     1		mov rbx,OFFSET tableB
+	   0000000000000000 R
+ 00000014  48/ B9	     1		mov rcx,RowSizeB
+	   0000000000000005
+ 0000001E  48/ F7 E1	     1		mul rcx							; row index * row size
+ 00000021  48/ 03 D8	     1		add rbx,rax						; row offset
+ 00000024  48/ C1 E9 00	     1		shr rcx,(TYPE BYTE / 2)		; byte=0, word=1, dword=2
+ 00000028  48/ C7 C0	     1		mov rax,0						; accumulator
+	   00000000
+ 0000002F  48/ C7 C6	     1		mov rsi,0						; column index
+	   00000000
+ 00000036		     1	??0000: 
+ 00000036  0F B6 14 33	     1			movzx edx,BYTE PTR[rbx + rsi*(TYPE BYTE)]
+ 0000003A  48/ 03 C2	     1		add rax,rdx						; add to accumulator
+ 0000003D  48/ FF C6	     1		inc rsi
+ 00000040  E2 F4	     1		loop ??0000
+ 00000042  5E		     1		pop rsi							; restore changed regs
+ 00000043  59		     1		pop rcx
+ 00000044  5B		     1		pop rbx
+ 00000045  E8 00000000 E		call  WriteHex64
+ 0000004A  E8 00000000 E		call  Crlf
+
+					mCalc_row_sum index, OFFSET tableW, RowSizeW, WORD
+ 0000004F  53		     1		push rbx		; save changed regs
+ 00000050  51		     1		push rcx
+ 00000051  56		     1		push rsi
+ 00000052  48/ 8B 05	     1		mov rax,index
+	   0000009B R
+ 00000059  48/ BB	     1		mov rbx,OFFSET tableW
+	   000000000000002D R
+ 00000063  48/ B9	     1		mov rcx,RowSizeW
+	   000000000000000A
+ 0000006D  48/ F7 E1	     1		mul rcx							; row index * row size
+ 00000070  48/ 03 D8	     1		add rbx,rax						; row offset
+ 00000073  48/ D1 E9	     1		shr rcx,(TYPE WORD / 2)		; byte=0, word=1, dword=2
+ 00000076  48/ C7 C0	     1		mov rax,0						; accumulator
+	   00000000
+ 0000007D  48/ C7 C6	     1		mov rsi,0						; column index
+	   00000000
+ 00000084		     1	??0001: 
+ 00000084  0F B7 14 73	     1			movzx edx,WORD PTR[rbx + rsi*(TYPE WORD)]
+ 00000088  48/ 03 C2	     1		add rax,rdx						; add to accumulator
+ 0000008B  48/ FF C6	     1		inc rsi
+ 0000008E  E2 F4	     1		loop ??0001
+ 00000090  5E		     1		pop rsi							; restore changed regs
+ 00000091  59		     1		pop rcx
+ 00000092  5B		     1		pop rbx
+ 00000093  E8 00000000 E		call  WriteHex64
+ 00000098  E8 00000000 E		call  Crlf
+
+					mCalc_row_sum index, OFFSET tableD, RowSizeD, DWORD
+ 0000009D  53		     1		push rbx		; save changed regs
+ 0000009E  51		     1		push rcx
+ 0000009F  56		     1		push rsi
+ 000000A0  48/ 8B 05	     1		mov rax,index
+	   0000009B R
+ 000000A7  48/ BB	     1		mov rbx,OFFSET tableD
+	   000000000000005F R
+ 000000B1  48/ B9	     1		mov rcx,RowSizeD
+	   0000000000000014
+ 000000BB  48/ F7 E1	     1		mul rcx							; row index * row size
+ 000000BE  48/ 03 D8	     1		add rbx,rax						; row offset
+ 000000C1  48/ C1 E9 02	     1		shr rcx,(TYPE DWORD / 2)		; byte=0, word=1, dword=2
+ 000000C5  48/ C7 C0	     1		mov rax,0						; accumulator
+	   00000000
+ 000000CC  48/ C7 C6	     1		mov rsi,0						; column index
+	   00000000
+ 000000D3		     1	??0002: 
+ 000000D3  8B 14 B3	     1			mov	  edx,DWORD PTR[rbx + rsi*(TYPE DWORD)]
+ 000000D6  48/ 03 C2	     1		add rax,rdx						; add to accumulator
+ 000000D9  48/ FF C6	     1		inc rsi
+ 000000DC  E2 F5	     1		loop ??0002
+ 000000DE  5E		     1		pop rsi							; restore changed regs
+ 000000DF  59		     1		pop rcx
+ 000000E0  5B		     1		pop rbx
+ 000000E1  E8 00000000 E		call  WriteHex64
+ 000000E6  E8 00000000 E		call  Crlf
+
+ 000000EB  B9 00000000				mov   ecx,0			; assign a process return code
+ 000000F0  E8 00000000 E		call  ExitProcess	; terminate the program
+ 000000F5			main ENDP
+
+				END 
+Microsoft (R) Macro Assembler (x64) Version 11.00.61030.0   01/13/14 15:59:36
+..\..\ch10\64-bit\RowSum.asm				     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+mCalc_row_sum  . . . . . . . . .	Proc
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+Crlf . . . . . . . . . . . . . .	P 	 00000000 Length= 00000000 External
+ExitProcess  . . . . . . . . . .	P 	 00000000 Length= 00000000 External
+WriteHex64 . . . . . . . . . . .	P 	 00000000 Length= 00000000 External
+main . . . . . . . . . . . . . .	P 	 00000000 _TEXT	Length= 000000F5 Public
+  ??0000 . . . . . . . . . . . .	L 	 00000036 _TEXT	
+  ??0001 . . . . . . . . . . . .	L 	 00000084 _TEXT	
+  ??0002 . . . . . . . . . . . .	L 	 000000D3 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+RowSizeB . . . . . . . . . . . .	Number	 00000005h   
+RowSizeD . . . . . . . . . . . .	Number	 00000014h   
+RowSizeW . . . . . . . . . . . .	Number	 0000000Ah   
+index  . . . . . . . . . . . . .	QWord	 0000009B _DATA	
+tableB . . . . . . . . . . . . .	Byte	 00000000 _DATA	
+tableD . . . . . . . . . . . . .	DWord	 0000005F _DATA	
+tableW . . . . . . . . . . . . .	Word	 0000002D _DATA	
+
+	   0 Warnings
+	   0 Errors

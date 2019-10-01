@@ -1,0 +1,19 @@
+﻿Build started 1/13/2014 3:59:35 PM.
+     1>Project "C:\data\Dropbox\Asmbook 7\examples\Project64\Project64\Project64.vcxproj" on node 2 (Rebuild target(s)).
+     1>_MASM:
+         Assembling ..\..\ch09\64 bit\Irvine64.asm...
+         cmd.exe /C "C:\Users\Kip\AppData\Local\Temp\tmp7e2fa71820f64e399d02931d4a8e301b.cmd"
+         ml64.exe /c /nologo /Zi /Fo"x64\x64\Irvine64.obj" /Fl"Project64.lst" /W3 /errorReport:prompt  /Ta"..\..\ch09\64 bit\Irvine64.asm"
+       _MASM:
+         Assembling ..\..\ch10\64-bit\RowSum.asm...
+         cmd.exe /C "C:\Users\Kip\AppData\Local\Temp\tmp540ea139fca64299b09866457089317e.cmd"
+         ml64.exe /c /nologo /Zi /Fo"x64\x64\RowSum.obj" /Fl"Project64.lst" /W3 /errorReport:prompt  /Ta"..\..\ch10\64-bit\RowSum.asm"
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\data\Dropbox\Asmbook 7\examples\Project64\x64\x64\Project64.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\data\Dropbox\Asmbook 7\examples\Project64\x64\x64\Project64.pdb" /SUBSYSTEM:CONSOLE /LARGEADDRESSAWARE:NO /TLBID:1 /ENTRY:"main" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\data\Dropbox\Asmbook 7\examples\Project64\x64\x64\Project64.lib" /MACHINE:X64 x64\x64\Irvine64.obj
+         x64\x64\RowSum.obj
+         Project64.vcxproj -> C:\data\Dropbox\Asmbook 7\examples\Project64\x64\x64\Project64.exe
+     1>Done Building Project "C:\data\Dropbox\Asmbook 7\examples\Project64\Project64\Project64.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.68

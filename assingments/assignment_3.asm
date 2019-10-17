@@ -12,21 +12,47 @@ goal: take the input of 3 numbers and manipulate based on assinged caculations
 include Irvine32.inc
 
 .data
-greeting BYTE "hello world", 0ah, 0dh, 0
+inputPrompt byte "enter a number: ", 0
 
-num1 dword 2
-num2 dword 3
-num3 dword 4
+num1 dword ?
+
+num2 dword ?
+
+num3 dword ?
 
 ; prompt to enter numbers
 
 .code
 main proc
-	mov edx, OFFSET greeting
+	mov edx, OFFSET inputPrompt
 	call writeString
+
+
+  call readDec
+  mov num1, eax
+
+  ; //////
+
+  mov edx, OFFSET inputPrompt
+  call writeString
+
+  call readDec
+  mov num2, eax
+
+  ; //////
+
+  mov edx, OFFSET inputPrompt
+	call writeString
+
+
+  call readDec
+  mov num1, eax
+
+  ; //////
 
 	mov	eax,5
 	add	eax,6
+  call writeInt
 
   ; /////// this is where numbers are taken as input
 
@@ -37,10 +63,6 @@ main proc
 
   ; /////// This is where main calculations occur
   mov eax,num1
-  mov edx,num1
-  mul eax,edx
-  mov num1,eax
-
   call writeInt
   ; ///////
 

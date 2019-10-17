@@ -20,6 +20,8 @@ num2 dword ?
 
 num3 dword ?
 
+finalVal dword ?
+
 ; prompt to enter numbers
 
 .code
@@ -58,28 +60,30 @@ main proc
   mul num1
   mul num1
   mov num1,eax
-  call writeInt
 
   mov eax,num2
   mul num1
   mov num1,eax
-  call writeInt
-
 
   mov eax,num2
   mul num2
   mov num2,eax
-  call writeInt
 
-
-  ;mov eax,num2
-  ;mul 5
-  ;call writeInt
+  mov ebx,5
+  mov eax,num2
+  mul ebx
 
   mov eax,num1
   add eax,num2
   mov num1,eax
+
+  mov eax,num1
+  mov ebx,num3
+  sub edx,edx
+  div ebx
+  mov finalVal,eax
   call writeInt
+
 
   ; ///////
 

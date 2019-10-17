@@ -14,11 +14,18 @@ include Irvine32.inc
 .data
 inputPrompt byte "enter a number: ", 0
 
+<<<<<<< HEAD
 num1 dword ?
 
 num2 dword ?
 
 num3 dword ?
+=======
+num1 DWORD 2d
+num2 DWORD 3d
+num3 DWORD 4d
+finalVal DWORD ?
+>>>>>>> 69d048fe8ca8dbe318c5a5bd34feaf58c1c24cc5
 
 ; prompt to enter numbers
 
@@ -52,7 +59,11 @@ main proc
 
 	mov	eax,5
 	add	eax,6
+<<<<<<< HEAD
   call writeInt
+=======
+	call writeInt
+>>>>>>> 69d048fe8ca8dbe318c5a5bd34feaf58c1c24cc5
 
   ; /////// this is where numbers are taken as input
 
@@ -63,6 +74,12 @@ main proc
 
   ; /////// This is where main calculations occur
   mov eax,num1
+<<<<<<< HEAD
+=======
+  mul eax,num1
+  mov num1,eax
+
+>>>>>>> 69d048fe8ca8dbe318c5a5bd34feaf58c1c24cc5
   call writeInt
   ; ///////
 

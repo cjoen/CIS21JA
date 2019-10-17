@@ -58,22 +58,29 @@ main proc
   mul num1
   mul num1
   mov num1,eax
-
-  mov eax,num2
-  mul num2
-  mov num2,eax
+  call writeInt
 
   mov eax,num2
   mul num1
   mov num1,eax
+  call writeInt
+
 
   mov eax,num2
-  mul 5
+  mul num2
+  mov num2,eax
   call writeInt
+
+
+  ;mov eax,num2
+  ;mul 5
+  ;call writeInt
 
   mov eax,num1
   add eax,num2
   mov num1,eax
+  call writeInt
+
   ; ///////
 
 

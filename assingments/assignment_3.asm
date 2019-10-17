@@ -41,7 +41,7 @@ main proc
   mul eax,edx
   mov num1,eax
 
-  call num1
+  call writeInt
   ; ///////
 
 

@@ -22,6 +22,10 @@ num3 dword ?
 
 finalVal dword ?
 
+remainder byte ?
+
+output byte " = ", finalVal, " R ", remainder
+
 ; prompt to enter numbers
 
 .code
@@ -82,7 +86,11 @@ main proc
   sub edx,edx
   div ebx
   mov finalVal,eax
-  call writeInt
+  mov remainder,edx
+
+  mov edx, OFFSET output
+  call writeString
+
 
 
   ; ///////
@@ -90,6 +98,8 @@ main proc
 
 
   ; /////// This is where the data is called to display
+
+
 
 
   ; ///////

@@ -74,6 +74,7 @@ main proc
   mov ebx,5
   mov eax,num2
   mul ebx
+  mov num2,eax
 
   mov eax,num1
   add eax,num2
@@ -81,10 +82,9 @@ main proc
 
   mov eax,num1
   mov ebx,num3
-  sub edx,edx
   div ebx
   mov finalVal,eax
-  mov remainder,edx
+  mov remainder,ebx
   call writeInt
 
 

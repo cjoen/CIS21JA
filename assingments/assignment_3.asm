@@ -24,7 +24,9 @@ num3 dword ?
 
 .code
 main proc
-	mov edx, OFFSET inputPrompt
+
+  ; /////// this is where numbers are taken as input
+  mov edx, OFFSET inputPrompt
 	call writeString
 
 
@@ -47,23 +49,15 @@ main proc
 
   call readDec
   mov num3, eax
-
-  ; //////
-
-	mov	eax,5
-	add	eax,6
-  call writeInt
-
-
-  ; /////// this is where numbers are taken as input
-
-
   ; //////
 
 
 
   ; /////// This is where main calculations occur
   mov eax,num1
+  mul eax,num1
+  mul eax,num1
+  mov num1,eax
   call writeInt
   ; ///////
 

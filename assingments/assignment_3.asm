@@ -55,8 +55,7 @@ main proc
 
   ; /////// This is where main calculations occur
   mov eax,num1
-  mul eax,num1
-  mul eax,num1
+  mul eax
   mov num1,eax
   call writeInt
   ; ///////

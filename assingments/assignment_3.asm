@@ -24,8 +24,6 @@ finalVal dword ?
 
 remainder byte ?
 
-output byte " = ", finalVal, " R ", remainder
-
 ; prompt to enter numbers
 
 .code
@@ -87,9 +85,7 @@ main proc
   div ebx
   mov finalVal,eax
   mov remainder,edx
-
-  mov edx, OFFSET output
-  call writeString
+  call writeInt
 
 
 

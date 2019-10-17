@@ -14,9 +14,9 @@ include Irvine32.inc
 .data
 greeting BYTE "hello world", 0ah, 0dh, 0
 
-num1 dword 0
-num2 dword 0
-num3 dword 0
+num1 dword 2
+num2 dword 3
+num3 dword 4
 
 ; prompt to enter numbers
 
@@ -36,9 +36,12 @@ main proc
 
 
   ; /////// This is where main calculations occur
+  mov eax,num1
+  mov edx,num1
+  mul eax,edx
+  mov num1,eax
 
-
-
+  call num1
   ; ///////
 
 

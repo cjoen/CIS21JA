@@ -22,7 +22,7 @@ num3 dword ?
 
 finalVal dword ?
 
-remainder byte ?
+remainder dword ?
 
 ; prompt to enter numbers
 
@@ -74,6 +74,7 @@ main proc
   mov ebx,5
   mov eax,num2
   mul ebx
+  mov num2, eax
 
   mov eax,num1
   add eax,num2
@@ -81,10 +82,8 @@ main proc
 
   mov eax,num1
   mov ebx,num3
-  sub edx,edx
   div ebx
   mov finalVal,eax
-  mov remainder,edx
   call writeInt
 
 
@@ -110,5 +109,12 @@ end main
 comment !
 Result:
 
+enter a number: 3
+enter a number: 4
+enter a number: 5
+37
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 5212) exited with code 0.
+To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
+Press any key to close this window . . .
 
 !

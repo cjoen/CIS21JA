@@ -84,6 +84,7 @@ main proc
   mov ebx,num3
   div ebx
   mov finalVal,eax
+  mov remainder,edx
   call writeInt
 
 

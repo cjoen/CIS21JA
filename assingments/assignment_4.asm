@@ -14,21 +14,35 @@ include Irvine32.inc
 .data
 ; //////////// Data storage here
 
-; # Array for numbers
+inputPrompt byte "enter a number: ", 0
 
+
+; # Array for numbers
+arr dword 10 dup(?)
 
 ; # Calculation variables
-
+arrSum dword ?
+arrMean dword ?
+arrRem dword ?
 
 
 .code
 main proc
 ; /////////// Main code here
-
-
-
+			
 ; # 1 # Loop the prompt and input method 10 times w/counter for Prompt
 
+mov edi, OFFSET arr
+mov ecx, LENGTHOF arr
+mov edx, OFFSET inputPrompt
+
+L1:
+	call writeString
+
+	call readDec
+	mov [edi], eax
+	add edi, type arr
+loop L1
 
 
 ; # 2 # Print array in order
@@ -37,11 +51,26 @@ main proc
 
 ; # 3 # Sum all variables and print
 
+mov edi,OFFSET arr
+mov ecx, LENGTHOF arr
+sub eax,eax
+L2:
+  add eax,[edi]
+  add edi, type arr
 
+loop L2
+
+call writeDec
+mov arrSum, eax
 
 ; # 4 # Find mean value and Print
 
-
+sub edx,edx
+mov ebx, 10
+div ebx
+call writeDec
+mov arrMean, eax
+mov arrRem, edx
 
 ; # 5 # Rotate vairable to reverse the array
 

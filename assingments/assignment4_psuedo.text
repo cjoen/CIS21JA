@@ -1,0 +1,47 @@
+Write a complete program that:
+    1. Prompt the user to enter 10 numbers.
+    2. save those numbers in a 32-bit integer array.
+    3. Print the array with the same order it was entered.
+    3. Calculate the sum of the numbers and display it.
+    4. Calculate the mean of the array and display it.
+    5. Rotate the members in the array forward one position for
+       9 times. so the last rotation will display the array in reversed order.
+    6. Print the array after each rotation.
+       check the sample run.
+
+
+Psuedo code
+######################
+Data variable needed
+
+array for 10 numbers (32 bit int array)
+
+Sum variable
+
+Mean variable
+
+
+
+
+########################
+Operations necessary
+
+1)
+Receive input:
+ - Loop the prompt and input method 10 times w/counter for Prompt
+
+2)
+Print array in order
+
+3)
+Sum all the variables
+ - Store in sum variable
+ - Print the Sum
+
+ 4)
+ Take sum and divide it by 10
+  - store value in mean variable
+  - print mean variable with the remainder
+
+  5)
+  Rotate the variables through the array to reverse the array.

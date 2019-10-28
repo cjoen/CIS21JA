@@ -22,14 +22,14 @@ num3 dword ?
 
 finalVal dword ?
 
-remainder byte ?
+remainder dword ?
 
 ; prompt to enter numbers
 
 .code
 main proc
 
-  ; /////// this is where numbers are taken as input
+  ; /////// this is where numbers are taken as input for calculations
   mov edx, OFFSET inputPrompt
 	call writeString
 
@@ -37,7 +37,7 @@ main proc
   call readDec
   mov num1, eax
 
-  ; //////
+  ; ////// num 2 value
 
   mov edx, OFFSET inputPrompt
   call writeString
@@ -45,7 +45,7 @@ main proc
   call readDec
   mov num2, eax
 
-  ; //////
+  ; ////// num 3 value
 
   mov edx, OFFSET inputPrompt
 	call writeString
@@ -63,43 +63,38 @@ main proc
   mul num1
   mov num1,eax
 
+  ; num1*num2
   mov eax,num2
   mul num1
   mov num1,eax
 
+  ; num2^2
   mov eax,num2
   mul num2
   mov num2,eax
 
+  ; num2*5
   mov ebx,5
   mov eax,num2
   mul ebx
   mov num2,eax
 
+  ; num2 + num1
   mov eax,num1
   add eax,num2
   mov num1,eax
 
+  ; num1/num3
   mov eax,num1
   mov ebx,num3
   div ebx
   mov finalVal,eax
-  mov remainder,ebx
-  call writeInt
-
-
-
-  ; ///////
-
-
 
   ; /////// This is where the data is called to display
 
-
-
+  call writeInt
 
   ; ///////
-
 
 
 	exit
@@ -107,8 +102,17 @@ main endp
 end main
 
 
+
+
 comment !
 Result:
 
+enter a number: 3
+enter a number: 4
+enter a number: 5
+37
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 5212) exited with code 0.
+To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
+Press any key to close this window . . .
 
 !

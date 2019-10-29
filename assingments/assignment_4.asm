@@ -16,6 +16,11 @@ include Irvine32.inc
 
 inputPrompt byte "enter a number: ", 0
 
+sumText byte "Sum value: "
+meanText byte "Mean value: "
+arrTag byte "Array: "
+arrFormat byte ", "
+newL byte 0DH
 
 ; # Array for numbers
 arr dword 10 dup(?)
@@ -47,7 +52,7 @@ loop L1
 
 ; # 2 # Print array in order
 
-
+	
 
 ; # 3 # Sum all variables and print
 
@@ -61,6 +66,7 @@ L2:
 loop L2
 
 call writeDec
+
 mov arrSum, eax
 
 ; # 4 # Find mean value and Print
@@ -70,10 +76,16 @@ mov ebx, 10
 div ebx
 call writeDec
 mov arrMean, eax
-mov arrRem, edx
+mov eax,edx
+call writeDec
+mov arrRem, eax
+
+;mov edx,Sumtext
+;call writeString
+mov eax,arrSum
+call writeDec
 
 ; # 5 # Rotate vairable to reverse the array
-
 
 
 

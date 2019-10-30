@@ -31,8 +31,9 @@ arr dword 10 dup(?)
 arrSum dword ?
 arrMean dword ?
 arrRem dword ?
-innerCount dword ?
-outerCount dword ?
+mCount dword ?
+sCount dword ?
+pCount dword 10
 
 .code
 main proc
@@ -121,11 +122,52 @@ call crlf
 
 ; # 5 # Rotate vairable to reverse the array
 
-;run a rotation
+mov ecx, 9
+mov sCount, 9
 
+Lmain:
 
+mov mCount, ecx
+mov ecx, sCount
+mov ebx, 9
+mov edi, OFFSET arr
 
+;add sub loop for rotations
+Lsub:
+	mov eax, [edi + ebx*4]
 
+	xchg eax, [edi + ebx*4 - 4]
+
+	mov [edi + ebx*4], eax
+
+	dec ebx
+
+loop Lsub
+
+dec sCount
+
+; ### Setting variable for printing
+mov edi, OFFSET arr
+mov ecx, LENGTHOF arr
+mov edx, OFFSET arrRot
+
+call writeString
+
+; looping to print array
+Lp:
+	mov eax,[edi]
+	call writeDec
+	mov edx, OFFSET arrFormat
+	call writeString
+	add edi, type arr
+loop Lp
+
+; ### Setting count back to main
+mov ecx,mCount
+
+;formatting for new line
+call crlf
+loop Lmain
 
 ;display rotation - need to be placed in the loop
 

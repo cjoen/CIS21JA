@@ -16,10 +16,13 @@ include Irvine32.inc
 
 inputPrompt byte "enter a number: ", 0
 
-sumText byte "Sum value: ", 0
-meanText byte "Mean value: ", 0
-arrTag byte "Array: ", 0
-arrFormat byte ", ", 0
+sumText byte "The sum is: ", 0
+meanText byte "The mean is: ", 0
+remText byte " and ", 0
+rem2Text byte "/10 ", 0
+arrTag byte "The original array: ", 0
+arrRot byte "After a rotation: ", 0
+arrFormat byte " ", 0
 
 ; # Array for numbers
 arr dword 10 dup(?)
@@ -28,7 +31,8 @@ arr dword 10 dup(?)
 arrSum dword ?
 arrMean dword ?
 arrRem dword ?
-
+innerCount dword ?
+outerCount dword ?
 
 .code
 main proc
@@ -49,18 +53,6 @@ L1:
 loop L1
 
 
-; # 2 # Print array in order
-
-mov edi, OFFSET arr
-mov ecx, LENGTHOF arr
-mov edx, OFFSET arrTag
-
-call writeString
-Lprint:
-	mov 
-
-loop Lprint
-
 ; # 3 # Sum all variables and print
 
 mov edi,OFFSET arr
@@ -72,34 +64,77 @@ L2:
 
 loop L2
 
-call writeDec
-call crlf
-
 mov arrSum, eax
 
-; # 4 # Find mean value and Print
-
-sub edx,edx
-mov ebx, 10
-div ebx
-call writeDec   ; Mainly for debugging
-call crlf
-
-mov arrMean, eax
-mov eax,edx
-call writeDec   ; Mainly for debugging
-call crlf
-
-mov arrRem, eax
-
-;mov edx,Sumtext
-;call writeString
+;Display sum
+mov edx, OFFSET Sumtext
+call writeString
 mov eax,arrSum
 call writeDec
 
+call crlf
+
+; # 4 # Find mean value and Print
+
+;Calculating mean value
+sub edx,edx
+mov ebx, 10
+div ebx
+
+; Storing mean and remainder value for later
+mov arrMean, eax
+mov arrRem, edx
+
+; Display Mean and remainder
+mov edx, OFFSET meanText
+call writeString
+mov eax,arrMean
+call writeDec
+
+mov edx, OFFSET remText
+call writeString
+mov eax,arrRem
+call writeDec
+mov edx, OFFSET rem2Text
+call writeString
+
+call crlf
+
+
+; # 2 # Print array in order
+
+mov edi, OFFSET arr
+mov ecx, LENGTHOF arr
+mov edx, OFFSET arrTag
+
+call writeString
+Lprint:
+	mov eax,[edi]
+	call writeDec
+	mov edx, OFFSET arrFormat
+	call writeString
+	add edi, type arr
+	
+loop Lprint
+
+call crlf
+
 ; # 5 # Rotate vairable to reverse the array
 
+;run a rotation
 
+
+
+
+
+;display rotation - need to be placed in the loop
+
+
+;# end of code #
+
+
+call crlf
+call crlf
 
 	exit
 main endp

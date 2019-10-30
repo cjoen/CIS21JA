@@ -2,9 +2,18 @@
 
 comment !
 
-name: Christopher Owen
-date: 10/16/19
-goal: take the input of 3 numbers and manipulate based on assinged caculations
+date: 10/30/19
+
+Write a complete program that:
+    1. Prompt the user to enter 10 numbers.
+    2. save those numbers in a 32-bit integer array.
+    3. Print the array with the same order it was entered.
+    3. Calculate the sum of the numbers and display it.
+    4. Calculate the mean of the array and display it.
+    5. Rotate the members in the array forward one position for
+       9 times. so the last rotation will display the array in reversed order.
+    6. Print the array after each rotation.
+       check the sample run.
 
 !
 
@@ -14,8 +23,8 @@ include Irvine32.inc
 .data
 ; //////////// Data storage here
 
+; # Format and text
 inputPrompt byte "enter a number: ", 0
-
 sumText byte "The sum is: ", 0
 meanText byte "The mean is: ", 0
 remText byte " and ", 0
@@ -31,13 +40,18 @@ arr dword 10 dup(?)
 arrSum dword ?
 arrMean dword ?
 arrRem dword ?
-mCount dword ?
-sCount dword ?
+
+; # Loop/count variables
+rotationC dword 9
+mCount dword 9
+sCount dword 9
 pCount dword 10
+
 
 .code
 main proc
 ; /////////// Main code here
+
 
 ; # 1 # Loop the prompt and input method 10 times w/counter for Prompt
 
@@ -54,7 +68,7 @@ L1:
 loop L1
 
 
-; # 3 # Sum all variables and print
+; # 2 # Sum all variables and print
 
 mov edi,OFFSET arr
 mov ecx, LENGTHOF arr
@@ -67,7 +81,7 @@ loop L2
 
 mov arrSum, eax
 
-;Display sum
+; Display sum
 mov edx, OFFSET Sumtext
 call writeString
 mov eax,arrSum
@@ -75,14 +89,14 @@ call writeDec
 
 call crlf
 
-; # 4 # Find mean value and Print
+; # 3 # Find mean value and Print
 
 ;Calculating mean value
 sub edx,edx
-mov ebx, 10
+mov ebx, LENGTHOF arr
 div ebx
 
-; Storing mean and remainder value for later
+; Storing mean and remainder value
 mov arrMean, eax
 mov arrRem, edx
 
@@ -102,7 +116,7 @@ call writeString
 call crlf
 
 
-; # 2 # Print array in order
+; # 4 # Print array in order
 
 mov edi, OFFSET arr
 mov ecx, LENGTHOF arr
@@ -115,24 +129,23 @@ Lprint:
 	mov edx, OFFSET arrFormat
 	call writeString
 	add edi, type arr
-	
+
 loop Lprint
 
 call crlf
 
 ; # 5 # Rotate vairable to reverse the array
 
-mov ecx, 9
-mov sCount, 9
+mov ecx, mCount
 
 Lmain:
 
 mov mCount, ecx
 mov ecx, sCount
-mov ebx, 9
+mov ebx, rotationC
 mov edi, OFFSET arr
 
-;add sub loop for rotations
+;Sub loop exchanges values in array
 Lsub:
 	mov eax, [edi + ebx*4]
 
@@ -146,33 +159,30 @@ loop Lsub
 
 dec sCount
 
-; ### Setting variable for printing
+; ### Setting variables for printing
 mov edi, OFFSET arr
 mov ecx, LENGTHOF arr
 mov edx, OFFSET arrRot
 
 call writeString
 
-; looping to print array
-Lp:
+; Loop to print the arrays
+Lprint:
 	mov eax,[edi]
 	call writeDec
 	mov edx, OFFSET arrFormat
 	call writeString
 	add edi, type arr
-loop Lp
+loop Lprint
 
 ; ### Setting count back to main
 mov ecx,mCount
 
-;formatting for new line
+; formatting for new line
 call crlf
 loop Lmain
 
-;display rotation - need to be placed in the loop
-
-
-;# end of code #
+; # end of code #
 
 
 call crlf
@@ -182,8 +192,7 @@ call crlf
 main endp
 end main
 
-
-
+; //////////// Example run
 
 comment !
 Result of run:

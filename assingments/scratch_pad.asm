@@ -26,6 +26,10 @@ main proc
 	mov	eax,5
 	add	eax,6
 
+  mov eax,3
+  mov ebx,4
+  mul ebx
+
 	exit
 main endp
 end main

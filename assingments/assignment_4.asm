@@ -167,13 +167,13 @@ mov edx, OFFSET arrRot
 call writeString
 
 ; Loop to print the arrays
-Lprint:
+Lp:
 	mov eax,[edi]
 	call writeDec
 	mov edx, OFFSET arrFormat
 	call writeString
 	add edi, type arr
-loop Lprint
+loop Lp
 
 ; ### Setting count back to main
 mov ecx,mCount
@@ -197,5 +197,27 @@ end main
 comment !
 Result of run:
 
+enter a number: 1
+enter a number: 2
+enter a number: 3
+enter a number: 4
+enter a number: 5
+enter a number: 6
+enter a number: 7
+enter a number: 8
+enter a number: 9
+enter a number: 10
+The sum is: 55
+The mean is: 5 and 5/10
+The original array: 1 2 3 4 5 6 7 8 9 10
+After a rotation: 10 1 2 3 4 5 6 7 8 9
+After a rotation: 10 9 1 2 3 4 5 6 7 8
+After a rotation: 10 9 8 1 2 3 4 5 6 7
+After a rotation: 10 9 8 7 1 2 3 4 5 6
+After a rotation: 10 9 8 7 6 1 2 3 4 5
+After a rotation: 10 9 8 7 6 5 1 2 3 4
+After a rotation: 10 9 8 7 6 5 4 1 2 3
+After a rotation: 10 9 8 7 6 5 4 3 1 2
+After a rotation: 10 9 8 7 6 5 4 3 2 1
 
 !

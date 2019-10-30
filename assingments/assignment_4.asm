@@ -16,11 +16,10 @@ include Irvine32.inc
 
 inputPrompt byte "enter a number: ", 0
 
-sumText byte "Sum value: "
-meanText byte "Mean value: "
-arrTag byte "Array: "
-arrFormat byte ", "
-newL byte 0DH
+sumText byte "Sum value: ", 0
+meanText byte "Mean value: ", 0
+arrTag byte "Array: ", 0
+arrFormat byte ", ", 0
 
 ; # Array for numbers
 arr dword 10 dup(?)
@@ -34,7 +33,7 @@ arrRem dword ?
 .code
 main proc
 ; /////////// Main code here
-			
+
 ; # 1 # Loop the prompt and input method 10 times w/counter for Prompt
 
 mov edi, OFFSET arr
@@ -52,7 +51,15 @@ loop L1
 
 ; # 2 # Print array in order
 
-	
+mov edi, OFFSET arr
+mov ecx, LENGTHOF arr
+mov edx, OFFSET arrTag
+
+call writeString
+Lprint:
+	mov 
+
+loop Lprint
 
 ; # 3 # Sum all variables and print
 
@@ -66,6 +73,7 @@ L2:
 loop L2
 
 call writeDec
+call crlf
 
 mov arrSum, eax
 
@@ -74,10 +82,14 @@ mov arrSum, eax
 sub edx,edx
 mov ebx, 10
 div ebx
-call writeDec
+call writeDec   ; Mainly for debugging
+call crlf
+
 mov arrMean, eax
 mov eax,edx
-call writeDec
+call writeDec   ; Mainly for debugging
+call crlf
+
 mov arrRem, eax
 
 ;mov edx,Sumtext

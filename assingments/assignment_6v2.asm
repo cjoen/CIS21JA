@@ -58,8 +58,8 @@ Lmain:
 	mov eax,ecx
 	call writeDec
 
-;	mov eax, ' '
-;	call printChar
+	mov eax, ' '
+	call writeChar
 
 	continue_loop:
 		inc ecx
@@ -94,6 +94,10 @@ isPrime PROC
   mov ebx, 2
   xor edx, edx
   div ebx
+
+  call crlf
+  call writeInt
+  call crlf
 
   mov ecx,eax
 

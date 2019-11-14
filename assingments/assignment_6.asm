@@ -44,7 +44,9 @@ call writeString
 
 ; Check number
 
-call checkNum
+; call checkNum
+
+call isPrime
 
 
 	exit

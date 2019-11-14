@@ -24,7 +24,6 @@ primeStr byte "Primes found until the given number : ", 0
 
 
 ; # Calculation variables
-var1 dword ?
 
 .code
 main proc

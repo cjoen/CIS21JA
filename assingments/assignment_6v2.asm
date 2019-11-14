@@ -39,13 +39,15 @@ main proc
   call readInt
   mov esi, eax
 
+  call isPrime
+
+  mov eax,ebx
+  call writeInt
+
   mov edx, OFFSET primeStr
   call writeString
 
-  call isPrime
 
-  mov eax,esi
-  call writeInt
 
   ; defining loop count
 
@@ -70,25 +72,25 @@ main endp
 
 isPrime PROC
 
+
+
   ; initiate stack
   push eax
-  push ebx
   push edx
+  push ecx
   push esi
 
   ; calculate loop itterations
   mov eax,esi
   mov ebx, 2
+  xor edx, edx
   div ebx
-  mov ecx,eax
 
-  ; if ecx > 1 then loop
-  cmp ecx,1
-  JBE is_prime
+  mov ecx,eax
 
   Lprime:
     cmp ecx,1
-    JBE is_prime
+    JE finish_prime
 
     mov eax,esi
     sub edx,edx
@@ -96,21 +98,20 @@ isPrime PROC
     cmp edx,0
     JE is_not_prime
 
+	dec ecx
+
     cmp ecx,1
     JNE Lprime
 
-    is_prime:
-      sub ebx,ebx
-      mov ebx, 1
-      clean_stack
+	mov ebx,1
+	JMP finish_prime
 
     is_not_prime:
-      sub ebx, ebx
+      xor ebx, ebx
 
-
-    clean_stack:
+    finish_prime:
       pop esi
-      pop ebx
+      pop ecx
       pop edx
       pop esi
 

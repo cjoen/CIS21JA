@@ -43,7 +43,9 @@ call writeString
 
 ; Check number
 
-call checkNum
+; call checkNum
+
+call isPrime
 
 
 	exit
@@ -72,12 +74,17 @@ checkNum ENDP
 ; if num is prime, print it
 isPrime PROC
 
-  run is prime on eax
-;
-;
-;
-;
-;
+
+JBE					; if n <= 1 return false
+	
+jump L2
+
+L2:					; loop (n/2)
+	JE else01		; if n % (n/2) == 0 return false
+	writeInt
+loop L2
+else01:				; else return true
+	ret				;
 
 ; Print eax if the value is prime
 

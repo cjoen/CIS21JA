@@ -37,25 +37,36 @@ main proc
   call writeString
 
   call readInt
-  mov esi, eax
-
-  call isPrime
-
-  mov eax,ebx
-  call writeInt
+  mov edi, eax
 
   mov edx, OFFSET primeStr
   call writeString
 
-
-
   ; defining loop count
 
-;  L1:
+	
+mov ecx, 2
 
+Lmain:
+	
+	mov esi, ecx
+	call isPrime
+	cmp ebx,1
+	JNE continue_loop
 
+	xor eax,eax
+	mov eax,ecx
+	call writeDec
 
-;  loop L1
+;	mov eax, ' '
+;	call printChar
+
+	continue_loop:
+		inc ecx
+		cmp ecx, edi
+		JNE Lmain
+	
+
 
 	exit
 main endp
@@ -71,8 +82,6 @@ main endp
 ; 5. Use conditionals to set value
 
 isPrime PROC
-
-
 
   ; initiate stack
   push eax
@@ -113,7 +122,7 @@ isPrime PROC
       pop esi
       pop ecx
       pop edx
-      pop esi
+      pop eax
 
 ret
 isPrime ENDP

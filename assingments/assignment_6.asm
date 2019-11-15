@@ -32,63 +32,99 @@ main proc
 ; # A # Takes input, calls functions
 
 ; Prompt input
-mov edx, OFFSET inputPrompt
-call writeString
-call readInt
-mov var1,eax
+  mov edx, OFFSET inputPrompt
 
+  call writeString
 
-mov edx, OFFSET primeStr
-call writeString
+  call readInt
+  mov edi, eax
 
-; Check number
+  mov edx, OFFSET primeStr
+  call writeString
 
-; call checkNum
+  ; defining loop count
 
-call isPrime
+	
+mov ecx, 2
+
+Lmain:
+	
+	mov esi, ecx
+	call isPrime
+	cmp ebx,0
+	JE continue_loop
+
+	xor eax,eax
+	mov eax,ecx
+	call writeDec
+
+	mov eax, ' '
+	call writeChar
+
+	continue_loop:
+		inc ecx
+		cmp ecx, edi
+		JNE Lmain
+	
 
 
 	exit
 main endp
 
-; # 1 # Loops through numbers leading up to n
-checkNum PROC
-
-mov ecx,var1
-L1:
-
- mov eax,ecx
-
- call isPrime
-
-loop L1
-
-
-
-    ret
-checkNum ENDP
-
 
 
 ; # 2 # Finds and prints the prime numbers before n
 ; if num is prime, print it
+; 1. Pass value through esi
+; 2. Calculate itterations of loop
+; 3. Check ecx > 1
+; 4. Loop and check if value is prime
+; 5. Use conditionals to set value
+
 isPrime PROC
 
+  ; initiate stack
+  push eax
+  push edx
+  push ecx
+  push esi
 
-JBE					; if n <= 1 return false
-	
-jump L2
+  ; calculate loop itterations
+  mov eax,esi
+  mov ebx, 2
+  xor edx, edx
+  div ebx
 
-L2:					; loop (n/2)
-	JE else01		; if n % (n/2) == 0 return false
-	writeInt
-loop L2
-else01:				; else return true
-	ret				;
+  mov ecx,eax
 
-; Print eax if the value is prime
+  Lprime:
+    cmp ecx,1
+    JE finish_prime
 
-		ret
+    mov eax,esi
+    sub edx,edx
+    div ecx
+    cmp edx,0
+    JE is_not_prime
+
+	dec ecx
+
+    cmp ecx,1
+    JNE Lprime
+
+	mov ebx,1
+	JMP finish_prime
+
+    is_not_prime:
+      xor ebx, ebx
+
+    finish_prime:
+      pop esi
+      pop ecx
+      pop edx
+      pop eax
+
+ret
 isPrime ENDP
 
 
@@ -99,7 +135,22 @@ end main
 
 comment !
 
+Run 1:
+--------------------------------------------
+enter any number: 44
+Primes found until the given number : 2 3 5 7 11 13 17 19 23 29 31 37 41 43
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 10068) exited with code 0.
+Press any key to close this window . . .
 
+--------------------------------------------
 
+Run 2:
+--------------------------------------------
+enter any number: 19
+Primes found until the given number : 2 3 5 7 11 13 17
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 6244) exited with code 0.
+Press any key to close this window . . .
+
+--------------------------------------------
 
 !

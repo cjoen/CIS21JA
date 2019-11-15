@@ -51,8 +51,8 @@ Lmain:
 	
 	mov esi, ecx
 	call isPrime
-	cmp ebx,1
-	JNE continue_loop
+	cmp ebx,0
+	JE continue_loop
 
 	xor eax,eax
 	mov eax,ecx
@@ -95,10 +95,6 @@ isPrime PROC
   xor edx, edx
   div ebx
 
-  call crlf
-  call writeInt
-  call crlf
-
   mov ecx,eax
 
   Lprime:
@@ -139,7 +135,22 @@ end main
 
 comment !
 
+Run 1:
+--------------------------------------------
+enter any number: 44
+Primes found until the given number : 2 3 5 7 11 13 17 19 23 29 31 37 41 43
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 10068) exited with code 0.
+Press any key to close this window . . .
 
+--------------------------------------------
 
+Run 2:
+--------------------------------------------
+enter any number: 19
+Primes found until the given number : 2 3 5 7 11 13 17
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 6244) exited with code 0.
+Press any key to close this window . . .
+
+--------------------------------------------
 
 !

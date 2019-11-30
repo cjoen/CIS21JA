@@ -18,11 +18,11 @@ include irvine32.inc
 
 array dword 40 dup(?)
 arr_length dword ?
-inputPrompt BYTE "Enter upt to 40 unsigned integers:"
+inputPrompt BYTE "Enter up to 40 unsigned integers:", 0
 
-inititalArr BYTE "These are the numbers stored in the array: "
-finalArr BYTE "These are the numbers after being sorted: "
-continut BYTE "Press any key to continue..."
+inititalArr BYTE "These are the numbers stored in the array: ". 0
+finalArr BYTE "These are the numbers after being sorted: ". 0
+continue BYTE "Press any key to continue...", 0
 
 ;=================================================
 .code
@@ -84,8 +84,8 @@ main endp
 ;
 enter_elem proc
 
-  push edp
-  mov edp, esp
+  push ebp
+  mov ebp, esp
   push ebx
   push ecx
   push eax
@@ -100,16 +100,16 @@ enter_elem proc
 
   InputL:
     cmp ecx, 40
-    JGE endLoop
+    jGE endLoop
     call readInt
     cmp eax, 0
-    JE endLoop
+    jE endLoop
     mov [ebx], eax
     add ebx, DWORD
     inc ecx
     jmp InputL
 
-  endLoop:
+    endLoop:
 
   pop eax
   mov [ebx+8], ecx
@@ -168,7 +168,6 @@ print_arr proc
 	pop ebp
 
 	ret 8
-
 print_arr endp
 
 ; ================================================

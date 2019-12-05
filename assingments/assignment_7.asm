@@ -19,7 +19,6 @@ include irvine32.inc
 array dword 40 dup(?)
 arr_length dword ?
 inputPrompt BYTE "Enter up to 40 unsigned integers:", 0
-
 inititalArr BYTE "These are the numbers stored in the array: ". 0
 finalArr BYTE "These are the numbers after being sorted: ". 0
 continue BYTE "Press any key to continue...", 0
@@ -36,7 +35,6 @@ main proc
   push offset array
   call enter_elem
   pop arr_length
-
   call crlf
   call crlf
 
@@ -95,7 +93,18 @@ enter_elem proc
 
   comment!
   code in c++:
-
+    while ( ecx < 40){
+      {
+    		eax = readInt();
+    		if( eax == 0 )
+    			break;
+    		else
+    		{
+    			[ebx] = eax;
+    			ebx += dword;
+    			ecx++;
+    		}
+    }
   !
 
   InputL:
@@ -109,7 +118,7 @@ enter_elem proc
     inc ecx
     jmp InputL
 
-    endLoop:
+  endLoop:
 
   pop eax
   mov [ebx+8], ecx
@@ -146,6 +155,12 @@ print_arr proc
 
   comment!
   conditional c++ code
+  ; printing each element from the array
+  while(ebx < ecx)
+  {
+    cout << [edx];
+    cout << endl;
+    edx += 4
   !
 
   printLoop:
@@ -206,6 +221,20 @@ sort_arr proc
 
   comment!
   c++ code of proc
+  while(eax < ecx)
+	{
+		ebx = eax; // check location for swap
+		edi = ebx; // max num index
+		while(ebx < ecx)
+		{
+			if(array[ebx] > array[edi])
+				edi = ebx;
+			ebx++;
+		}
+		compare and swap ( array[eax], array[edi]);
+
+		eax++;
+	}
   !
 
   startSort:
@@ -250,8 +279,6 @@ sort_arr proc
 	pop ebp
 
 	ret 8
-
-
 
 sort_arr endp
 
@@ -339,7 +366,23 @@ comment!
 
 output of code:
 ---------------
+Enter up to 40 unsigned dword integers. To end the array, enter 0.
+After each element press enter.
+1
+2
+3
+4
+6
+7
+8
+0
 
+
+Your initial array:
+1 2 3 4 6 7 8
+Your array sorted in descending order:
+8 7 6 4 3 2 1
+Press any key to continue...
 
 
 

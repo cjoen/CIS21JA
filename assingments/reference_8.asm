@@ -1,422 +1,226 @@
-Title Assignment 8
-
-COMMENT !
-*****************
-date: 03/19/2019
-*****************
-Description:
-	- This program asks the user for the length of a 2D array to use (up to 40)
-	- It then asks how many elements there are in a row
-	- It also asks the type of the arrays data (BYTE, WORD, DWORD)
-	- Then the user is prompted to enter the data of their array
-	- After filling the array, the user can ask the sum of the elements in a row
-	  By giving the row index
+comment!
+------------------------------------------------------------------
+Date : 19th June, 2019
+This program -
+1. asks the user to enter how many elements the array has. The maxSize is 40.
+2. asks the user to enter how many elements in each row in the array.
+3. asks the user what type the array is. It could be a byte, word or dword array.
+4. Asks the user to enter the elements of the array.
+5. Ask the user to enter the row index, 
+and then calculates the sum of the selected row, and displays it. 
+------------------------------------------------------------------
 !
 
 include irvine32.inc
-; ===============================================
+
+
 .data
-
-sizeString BYTE "How many elements does your 2D array have?", 0
-rowStr BYTE "How many elements in a row of your 2D array?", 0
-rowStr2 BYTE "(It should divide the array into equal rows)", 0
-dataStr BYTE "What type of data does your array have?", 0
-dataStr2 BYTE "Type 1 for BYTE, 2 for WORD, and 3 for DWORD", 0
-elementsStr BYTE "Enter the elements of your array", 0
-sumStr BYTE "Which row do you want to sum up?", 0
-sumStr2 BYTE "The sum is : " , 0
-pauseStr BYTE "Press any key to continue...", 0
-
-arraySize BYTE ?
-rowSize BYTE ?
-dataType BYTE ?
-rowIndex BYTE ?
-array DWORD 40 dup (?)
+elemStr byte "Enter how many elements in your array:", 0
+errorStr byte "Warning! Array size must be greater than 0.", 0
+rowNumStr byte "Enter the row size:",0
+typeStr byte "Enter the type of your array.", 0 
+byteStr byte "1 for byte.", 0 
+wordStr byte "2 for word.", 0 
+dwordStr byte "4 for doubleword.", 0 
+enterStr byte "Enter an element in your array,", 0 
+rowStr byte "Enter row number that you want me to sum: ", 0 
+sumStr byte "The sum is:", 0 
 
 
-;=================================================
-.code
+table dword 40 DUP (?)  ;Note: table data type could be byte, word or dword
+
+rowIndex dword ?
+number_of_elem dword ?
+rowSize dword ?
+
+.code 
+
 main proc
 
-	;;;;; Ask for array size ;;;;;
-	mov edx, offset sizeString
-	call writeString
-	call crlf
-	push 40
-	call read_range_int
-	pop eax
-	mov arraySize, al
+	mov edx, OFFSET elemStr  ;"Enter how many elements in your array:"
+	call writeString        
+
+	call readInt             ; read in number of elements 
+	cmp eax, 0               ; check if eax is zero
+	JE error01               ; if eax == 0, JMP to error01
+	mov number_of_elem, eax  ; save to number_of_elem
+
+	mov edx, OFFSET rowNumStr ; "Enter the row size:"
+	call writeString 
 
 
-	;;;;; Ask for elements per row ;;;;;
-	mov edx, offset rowStr
-	call writeString
-	call crlf
-	mov edx, offset rowStr2
-	call writeString
-	call crlf
-	push eax
-	call read_range_int
-	pop eax
-	mov rowSize, al
+	call readInt           ;read in row size 
+	mov rowSize, eax       ;save in rowSize
+	
 
+	mov edx, OFFSET typeStr  ;"Enter the type of your array."
+	call writeString 
 
-	;;;;; Ask for array data type ;;;;;
-	mov edx, offset dataStr
-	call writeString
-	call crlf
-	mov edx, offset dataStr2
-	call writeString
-	call crlf
-	push 3
-	call read_range_int
-	pop eax
-	mov dataType, al
+	call crlf 
 
-
-	;;;;; Ask for the elements of the array ;;;;;
-	; if(dataType == 1)
-	;	enter_elem(BYTE, offset array, arraySize, rowSize)
-	; else if(dataType == 2)
-	;	enter_elem(WORD, offset array, arraySize, rowSize)
-	; else
-	;	enter_elem(DWORD, offset array, arraySize, rowSize)
-	;
-
-	cmp dataType, 1
-	JNE notBYTE
-		push BYTE
-		jmp pushedType
-	notBYTE:
-	cmp dataType, 2
-	JNE notWORD
-		push WORD
-		jmp pushedType
-	notWORD:
-	push DWORD
-	pushedType:
-
-	push offset array
-	xor eax, eax
-	mov al, arraySize
-	push eax
-	mov edx, offset elementsStr
-	call writeString
-	call crlf
-	call enter_elem
-
-
-	;;;;; Ask for the index of the row to sum up ;;;;;
-	mov edx, offset sumStr
-	call writeString
+	mov edx, OFFSET byteStr ;  "1 for byte.""
+	call writeString 
 	call crlf
 
-	mov al, arraySize
-	div rowSize
-	dec al
-	; this is calculating how many rows there should be based on array size and row length
-	; EXAMPLE: 40 size, 10 row length = 4 rows
-	; then it decrements by one because selection is from 0 to 3 instead of 1 to 4
-
-	push eax
-	call read_range_int
-	pop eax
-	mov rowIndex, al
-
-
-	sub esp, 4
-	push offset array    ;;;; pushing *array
-
-	mov al, rowSize      ;;;; pushing rowSize
-	push eax
-
-	; if(dataType == 1)
-	;	calcRowSum(offset array, arraySize, BYTE, rowSize)
-	; else if(dataType == 2)
-	;	calcRowSum(offset array, arraySize, WORD, rowSize)
-	; else
-	;	calcRowSum(offset array, arraySize, DWORD,rowSize)
-	;
-
-
-	cmp dataType, 1
-	JNE notBYTE2
-		push BYTE
-		jmp pushedType2
-	notBYTE2:
-	cmp dataType, 2
-	JNE notWORD2
-		push WORD
-		jmp pushedType2
-	notWORD2:
-	push DWORD
-	pushedType2:         ;;;; pushing type
-	mov al , rowIndex
-	push eax            ;;;; pushing rowIndex
-
-	;calcRowSum( int *array, int rowSize, int type, int rowIndex)
-	call calcRowSum
-	pop eax
-
-	mov edx, offset sumStr2
-	call writeString
-	call writeInt
+	mov edx, OFFSET wordStr ; "2 for word."
+	call writeString 
 	call crlf
 
-	;;;;; Pause main screen ;;;;;
-	mov edx, offset pauseStr
-	call writeString
-	call readChar
+	mov edx, OFFSET dwordStr  ; "4 for doubleword."
+	call writeString 
+	call crlf
 
-   exit
+	call readInt             ;read in type of table
+	mov edi, eax             ; edi == type 
+
+	mov edx, OFFSET enterStr  ;"Enter an element in your array,"
+
+	mov esi, OFFSET table    ;esi = &table
+	
+	mov ecx, number_of_elem  ; ecx = number_of_elem
+
+	;loop to read in elements of table and save to memory 
+	readLoop:
+		call writeString 
+		call readInt 
+		mov [esi], eax
+		add esi, edi
+		loop readloop
+	
+	mov edx, OFFSET rowStr  ;"Enter row number that you want me to sum:"
+	call writeString 
+
+	call readInt            ; read in rowIndex    
+	mov rowIndex, eax       ;save to variable rowIndex
+
+	sub esp, 4             ;reserve space for sum 
+	push rowIndex          ;push func args on stack
+	push edi               ;type
+	push rowSize           ;numCol
+	push OFFSET table      ;&table
+	call calcRowSum       ;call procedure calcRowSum
+	pop eax                ;pop sum calculated to eax
+	
+	mov edx, OFFSET sumStr  ;"The sum is: "
+	call writeString 
+
+	
+	call writeHex          ;display sum
+	call crlf
+
+
+	JMP end01              ;JMP to end01
+	
+	error01 :              ;if number_of_elem == 0, display error string
+		mov edx, OFFSET errorStr
+		call writeString 
+
+	end01:
+
+exit 
 main endp
 
-; ================================================
-; void read_range_int(max)
-;
-; Input:
-;   MAX the maximum value the integer can be
-; Output:
-;   input int through the stack
-; Operation:
-;   take an integer value between 0 and the maximum value
-; ================================================
-read_range_int proc
-	push ebp
-	mov ebp, esp
-	push eax
-	xor eax, eax
 
-	; do
-	; {
-	;	eax = call readInt();
-	; } while (eax > [ebp + 8] || eax < 0);
-
-	call readInt
-	whileTakingInputs:
-		cmp eax, [ebp + 8]
-		JG takeInput
-		cmp eax, 0
-		JL takeInput
-		jmp outLoop
-		takeInput:
-		call readInt
-		jmp whileTakingInputs
-	outLoop:
-
-	mov [ebp+8], eax
-	pop eax
-	pop ebp
-	ret
-
-read_range_int endp
-
-; ================================================
-; void enter_elem(datatype, offset array, arraySize)
-;
-; Input:
-;   datatype BYTE WORD OR DWORD
-;	array offset of the array to fill
-;	arraySize number of elements to fill
-;	rowSize number of rows to fill
-; Output:
-;   No returns
-; Operation:
-;   Fill the array with elements from the user
-; ================================================
-enter_elem proc
-	push ebp
-	mov ebp, esp
-	push edx
-	push ebx
-	push eax
-	push edi
-
-	mov edx, [ebp + 16] ; data type
-	mov edi, [ebp + 12] ; array offset
-	mov ebx, [ebp + 8] ; array size
-	xor eax, eax
-
-	comment!
-	; go through the array length and fill in every value with an input
-	while( eax < ebx )
-	{
-		oldEAX = eax
-		eax = readInt();
-		array[edi] = eax;
-		eax = oldEAX;
-		eax++;
-	}
-	!
-	loopInputs:
-		cmp eax, ebx
-		jGE outLoop
-		push eax
-		call readInt
-		mov [edi], eax
-		pop eax
-		add edi, edx
-		inc eax
-		jmp loopInputs
-	outLoop:
-
-	pop edi
-	pop eax
-	pop ebx
-	pop edx
-	pop ebp
-	ret 12
-enter_elem endp
-
-
-; ================================================
-; int calcRowSum( int *array, int rowSize, int type, int rowIndex)
-;
-; Input:
-;  *array   : is the array offset to modify
-;  rowSize  : row size in array
-;  type     : the datatype to use (BYTE, WORD or DWORD)
-;  rowIndex : the index of the row to modify, chosen by the user
-; Output:
-;   returns the sum of the row through the stack
-; Operation:
-;   Move a pointer to the beginning of a row, and sum up all values on that row
-; ================================================
-calcRowSum proc
-	push ebp
-	mov ebp, esp
-	push edi
-	push edx
-	push ecx
-	push ebx
-	push eax
-
-	mov edi, [ebp + 20] ; the array offset
-	mov ecx, [ebp + 12] ; datatype
-	mov ebx, [ebp + 16 ] ; row size
-
-	comment!
-	; C++ Equivalent of summing up a row
-	eax = datatype * rowsize * rowIndex;
-	// this will move the index to the beginning of the row to sum
-	edi += eax;
-	eax = 0;
-	ebx = 0;
-	if(ecx == BYTE)
-		while(ebx < edx)
-		{
-			al += [edi];
-			edi += ecx;
-			ebx++;
-		}
-	else if(ecx == WORD)
-		while(ebx < edx)
-		{
-			ax += [edi];
-			edi += ecx;
-			ebx++;
-		}
-	else
-		while(ebx < edx)
-		{
-			eax += [edi];
-			edi += ecx;
-			ebx++;
-		}
-	[ebp + 24] = eax;
-	!
-
-	xor edx, edx
-	mov eax, ecx
-	mul ebx
-	mov ebx, [ebp + 8] ; row index
-	mul ebx
-	;eax now has the index addition needed
-	add edi, eax
-
-	xor eax, eax
-	mov edx, [ebp + 16] ; row size
-	xor ebx, ebx
-
-
-	cmp ecx, 1
-	JNE notBYTE3
-		loopSumByteRow:
-		cmp ebx, edx
-		jGE outLoop1
-
-		add al, [edi]
-		add edi, ecx
-		inc ebx
-		jmp loopSumByteRow
-	outLoop1:
-		jmp sumFinish
-	notBYTE3:
-	cmp ecx, 2
-	JNE notWORD3
-	loopSumWordRow:
-		cmp ebx, edx
-		jGE outLoop2
-
-		add ax, [edi]
-		add edi, ecx
-		inc ebx
-		jmp loopSumWordRow
-	outLoop2:
-		jmp sumFinish
-	notWORD3:
-	loopSumDWordRow:
-		cmp ebx, edx
-		jGE outLoop3
-
-		add eax, [edi]
-		add edi, ecx
-		inc ebx
-		jmp loopSumDWordRow
-	outLoop3:
-	sumFinish:
-
-	mov [ebp + 24], eax
-
-	pop eax
-	pop ebx
-	pop ecx
-	pop edx
-	pop edi
-	pop ebp
-	ret 16
-calcRowSum endp
-
-end main
 
 comment!
-SAMPLE RUN:
-How many elements does your 2D array have?
-15
-How many elements in a row of your 2D array?
-(It should divide the array into equal rows)
-5
-What type of data does your array have?
-Type 1 for BYTE, 2 for WORD, and 3 for DWORD
-2
-Enter the elements of your array
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-Which row do you want to sum up?
-2
-The sum is : +65
-Press any key to continue...
+------------------------------------------------------------------
+calcRowSum proc
+
+C++ equivalent 
+int calcRowSum ( int *array, int rowSize, int type, int rowIndex);
+
+INPUT : 
+      ROWINDEX THROUGH STACK 
+	  TYPE THROUGH STACK
+	  ROWSIZE (numCols) THROUGH STACK
+	  ADDR_ OF TABLE THROUGH STACK
+
+OUTPUT :
+	SUM OF SELECTED ROW THROUGH STACK
+
+ This function calculates the sum of selected row 
+  and sends it back through stack. 
+------------------------------------------------------------------
+!
+calcRowSum proc
+	push ebp 
+	mov ebp, esp
+
+	;push registers on stack
+	push ebx
+	push eax
+	push edi
+	push ecx
+	push edx
+
+	mov ebx, [ebp + 8]   ;&table
+	mov eax, [ebp + 12]  ; rowSize (numCols)
+	mov edi, [ebp + 16]  ;type
+	mov ecx, [ebp + 20]  ;rowIndex
+
+	;----------------------
+	;to get to appropriate row :
+	; if ebx -----> &table
+	; add ebx, rowSize * TYPE * rowIndex
+	;----------------------
+	mul edi
+	mul ecx
+
+	add ebx, eax
+
+
+	mov ecx, [ebp + 12]   ;loop rowSize times
+	xor edx, edx          ;edx will hold the sum
+
+	cmp edi, 1           ; if type == 1, do byte sum
+	JE byteSum 
+	cmp edi, 2           ; if type == 2, do word sum 
+	JE wordSum 
+
+	dword_sum_Loop:      ;else if type == 4, dword sum
+		add edx, DWORD PTR [ebx]   
+		add ebx, edi     ;advance ebx
+	loop dword_sum_Loop
+	JMP done01
+
+	byteSum:
+		byte_sum_Loop:
+			add dl, BYTE PTR [ebx]  ;note : here the sum is saved in dl
+			add ebx, edi
+		loop byte_sum_Loop
+	JMP done01
+		 
+	wordSum:
+		word_sum_Loop:
+     
+			add dx, WORD PTR [ebx]  ;note : here the sum is saved in dx
+			add ebx, edi
+		loop word_sum_Loop
+    
+	done01:
+		mov [ebp + 24], edx        ;store sum on stack
+
+		pop edx                    ;pop al registers off stack
+		pop ecx
+		pop edi
+		pop eax
+		pop ebx
+	
+		pop ebp 
+	ret 16                        ; (4 args * 4 = 16)
+	calcRowSum endp
+end main
+
+comment !
+
+
+------ Eample runs:
+
+
+
+
+
+----------------------------------------
+
+
 !

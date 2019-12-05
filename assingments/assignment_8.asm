@@ -16,16 +16,16 @@ include Irvine32.inc
 ; - Data storage here ----------------
 
 ; Promts and text
-elemStr byte "Enter the number elements in your array:", 0
+arraySizePrompt byte "Enter the number elements in your array:", 0
 errorStr byte "Error. size must be greater than 0.", 0
-rowNumStr byte "Enter the row size:",0
-typeStr byte "Enter the type of your array.", 0
+rowSizePrompt byte "Enter the row size:",0
+typePrompt byte "Enter the type of your array.", 0
 byteStr byte "1 for BYTE. ", 0
 wordStr byte "2 for WORD. ", 0
 dwordStr byte "4 for DWORD.", 0
-enterStr byte "Enter a value for the array: ", 0
-rowStr byte "Enter a row number to sum: ", 0
-sumStr byte "Sum:", 0
+valuePrompt byte "Enter a value for the array: ", 0
+rowSumPrompt byte "Enter a row number to sum: ", 0
+sumStr byte "Sum: ", 0
 
 ; Array
 table dword 40 DUP (?)  ;Note: table data type could be byte, word or dword
@@ -41,7 +41,7 @@ rowSize dword ?
 ; - Main Function -------------------
 main proc
 
-  mov edx, OFFSET elemStr  ;"Enter how many elements in your array:"
+  mov edx, OFFSET arraySizePrompt  ;"Enter how many elements in your array:"
   call writeString
 
   call readInt             ; read in number of elements
@@ -49,7 +49,7 @@ main proc
   JE error01               ; if eax == 0, JMP to error01
   mov number_of_elem, eax  ; save to number_of_elem
 
-  mov edx, OFFSET rowNumStr ; "Enter the row size:"
+  mov edx, OFFSET rowSizePrompt ; "Enter the row size:"
   call writeString
 
 
@@ -57,7 +57,7 @@ main proc
   mov rowSize, eax       ;save in rowSize
 
 
-  mov edx, OFFSET typeStr  ;"Enter the type of your array."
+  mov edx, OFFSET typePrompt  ;"Enter the type of your array."
   call writeString
 
   call crlf
@@ -75,7 +75,7 @@ main proc
   call readInt             ;read in type of table
   mov edi, eax             ; edi == type
 
-  mov edx, OFFSET enterStr  ;"Enter an element in your array,"
+  mov edx, OFFSET valuePrompt  ;"Enter an element in your array,"
 
   mov esi, OFFSET table    ;esi = &table
 
@@ -89,7 +89,7 @@ main proc
     add esi, edi
     loop readloop
 
-  mov edx, OFFSET rowStr  ;"Enter row number that you want me to sum:"
+  mov edx, OFFSET rowSumPrompt  ;"Enter row number that you want me to sum:"
   call writeString
 
   call readInt            ; read in rowIndex
@@ -122,11 +122,11 @@ main proc
 	exit
 main endp
 
+comment !
+ - calcRowSum ----------------
 
-; - calcRowSum ----------------
-;
-;
-;
+
+!
 
 calcRowSum PROC
   push ebp

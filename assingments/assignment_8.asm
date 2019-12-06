@@ -107,13 +107,13 @@ main proc
   call crlf
 
 
-  JMP end              ;JMP to end
+  JMP end1              ;JMP to end
 
   errorOut:              ;if totalElements == 0 or > 40 display error
     mov edx, OFFSET errorLimStr ; display error for out of bounds array.
     call writeString
 
-  end:
+  end1:
 
 	exit
 main endp
@@ -226,9 +226,36 @@ if(type == 1){
 
 end main
 
-; - Example run ----------------------------
 
 comment !
 
+- Example run ----------------------------
+
+Enter the number elements in your array:9
+Enter the row size:3
+Enter the type of your array.
+'1' for BYTE. '2' for WORD. '4' for DWORD.
+2
+Enter a value for the array: 2
+Enter a value for the array: 3
+Enter a value for the array: 4
+Enter a value for the array: 5
+Enter a value for the array: 6
+Enter a value for the array: 7
+Enter a value for the array: 8
+Enter a value for the array: 9
+Enter a value for the array: 0
+Enter a row number to sum: 1
+Sum: 00000012
+
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 1356) exited with code 0.
+Press any key to close this window . . .
+
+- Error example ------------------------
+
+Enter the number elements in your array:41
+Error. size must be greater than 0 and equal to or less than 40.
+C:\Users\test\Documents\Project32_VS2017\Debug\Project.exe (process 7880) exited with code 0.
+Press any key to close this window . . .
 
 !

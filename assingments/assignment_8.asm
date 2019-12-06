@@ -4,9 +4,16 @@ comment !
 
 date: December 5, 2019
 
+CIS 21JA
 Assignment 8
 This program:
-
+  1. Asks user for how large an array will be
+  2. Asks user how many rows will be in the array
+  3. Asks user what type the array will be
+  4. Asks user to input values into the array
+  5. Uses a process defined as calcRowSum
+  6. Correctly sum and return value of a specific row in the array
+  7. Prints the value as a hex value
 
 !
 
@@ -16,7 +23,7 @@ include Irvine32.inc
 ; - Data storage here ---------
 
 ; Promts and text
-arraySizePrompt byte "Enter the number elements in your array:", 0
+arraySizePrompt byte "Enter the number elements in your array (max size 40):", 0
 errorLimStr byte "Error. size must be greater than 0 and equal to or less than 40.", 0
 rowSizePrompt byte "Enter the row size:",0
 typePrompt byte "Enter the type of your array.", 0

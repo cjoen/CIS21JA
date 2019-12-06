@@ -13,43 +13,45 @@ This program:
 include Irvine32.inc
 
 .data
-; - Data storage here ----------------
+; - Data storage here ---------
 
 ; Promts and text
 arraySizePrompt byte "Enter the number elements in your array:", 0
-errorStr byte "Error. size must be greater than 0.", 0
+errorLimStr byte "Error. size must be greater than 0 and equal to or less than 40.", 0
 rowSizePrompt byte "Enter the row size:",0
 typePrompt byte "Enter the type of your array.", 0
-byteStr byte "1 for BYTE. ", 0
-wordStr byte "2 for WORD. ", 0
-dwordStr byte "4 for DWORD.", 0
+typeStr byte "'1' for BYTE. '2' for WORD. '4' for DWORD.", 0
 valuePrompt byte "Enter a value for the array: ", 0
 rowSumPrompt byte "Enter a row number to sum: ", 0
 sumStr byte "Sum: ", 0
 
-; Array
-table dword 40 DUP (?)  ;Note: table data type could be byte, word or dword
+; Array - could be byte, word, dword
+table dword 40 DUP (?)
 
 ; Array Index
 rowIndex dword ?
-number_of_elem dword ?
+totalElements dword ?
 rowSize dword ?
 
 
 .code
 
-; - Main Function -------------------
+; - Main Function -------------
 main proc
 
   mov edx, OFFSET arraySizePrompt  ;"Enter how many elements in your array:"
   call writeString
 
   call readInt             ; read in number of elements
-  cmp eax, 0               ; check if eax is zero
-  JE error01               ; if eax == 0, JMP to error01
-  mov number_of_elem, eax  ; save to number_of_elem
 
-  mov edx, OFFSET rowSizePrompt ; "Enter the row size:"
+  ; if( 40 < eax || eax <= 0) { return error } else { save to totalElements}
+  cmp eax, 0
+  JE errorOut
+  cmp eax, 40
+  JA errorOut
+  mov totalElements, eax  ; save to totalElements
+
+  mov edx, OFFSET rowSizePrompt ; prompt user for row size
   call writeString
 
 
@@ -57,29 +59,22 @@ main proc
   mov rowSize, eax       ;save in rowSize
 
 
-  mov edx, OFFSET typePrompt  ;"Enter the type of your array."
-  call writeString
-
-  call crlf
-
-  mov edx, OFFSET byteStr ;  "1 for byte.""
-  call writeString
-
-  mov edx, OFFSET wordStr ; "2 for word."
-  call writeString
-
-  mov edx, OFFSET dwordStr  ; "4 for doubleword."
+  mov edx, OFFSET typePrompt  ; prompt user for array type
   call writeString
   call crlf
 
-  call readInt             ;read in type of table
-  mov edi, eax             ; edi == type
+  mov edx, OFFSET typeStr ; display options for type
+  call writeString
+  call crlf
 
-  mov edx, OFFSET valuePrompt  ;"Enter an element in your array,"
+  call readInt             ; read in type of table
+  mov edi, eax             ; set edi to type of array
 
-  mov esi, OFFSET table    ;esi = &table
+  mov edx, OFFSET valuePrompt  ; prompt user for values
 
-  mov ecx, number_of_elem  ; ecx = number_of_elem
+  mov esi, OFFSET table    ; esi = &table
+
+  mov ecx, totalElements  ; ecx = number_of_elem
 
   ;loop to read in elements of table and save to memory
   readLoop:
@@ -89,43 +84,48 @@ main proc
     add esi, edi
     loop readloop
 
-  mov edx, OFFSET rowSumPrompt  ;"Enter row number that you want me to sum:"
+  mov edx, OFFSET rowSumPrompt  ;prompt user for row to sum
   call writeString
 
   call readInt            ; read in rowIndex
-  mov rowIndex, eax       ;save to variable rowIndex
+  mov rowIndex, eax       ; save to rowIndex
 
-  sub esp, 4             ;reserve space for sum
-  push rowIndex          ;push func args on stack
-  push edi               ;type
-  push rowSize           ;numCol
-  push OFFSET table      ;&table
-  call calcRowSum       ;call procedure calcRowSum
-  pop eax                ;pop sum calculated to eax
+  sub esp, 4             ; reserve space for sum
+  push rowIndex          ; push func args on stack
+  push edi
+  push rowSize
+  push OFFSET table
+
+  ; call and save returned value to eax
+  call calcRowSum
+  pop eax
 
   mov edx, OFFSET sumStr  ;"The sum is: "
   call writeString
-
 
   call writeHex          ;display sum
   call crlf
 
 
-  JMP end01              ;JMP to end01
+  JMP end              ;JMP to end
 
-  error01 :              ;if number_of_elem == 0, display error string
-    mov edx, OFFSET errorStr
+  errorOut:              ;if totalElements == 0 or > 40 display error
+    mov edx, OFFSET errorLimStr ; display error for out of bounds array.
     call writeString
 
-  end01:
+  end:
 
 	exit
 main endp
 
+
 comment !
- - calcRowSum ----------------
-
-
+ - calcRowSum -----------
+Steps:
+  1. push registers to stack
+  2. retreive values from stack
+  3. Loop and sum values dependent on type of array
+  4. push sum to stack
 !
 
 calcRowSum PROC
@@ -139,54 +139,82 @@ calcRowSum PROC
   push ecx
   push edx
 
-  mov ebx, [ebp + 8]   ;&table
-  mov eax, [ebp + 12]  ; rowSize (numCols)
-  mov edi, [ebp + 16]  ;type
-  mov ecx, [ebp + 20]  ;rowIndex
+  mov ebx, [ebp + 8]   ;&table - reference table
+  mov eax, [ebp + 12]  ;rowSize - row size
+  mov edi, [ebp + 16]  ;type - type of row
+  mov ecx, [ebp + 20]  ;rowIndex - index of row
 
-  ;----------------------
-  ;to get to appropriate row :
-  ; if ebx -----> &table
-  ; add ebx, rowSize * TYPE * rowIndex
-  ;----------------------
+
+  comment!
+  ----------------
+   to get to appropriate row :
+   ebx points to &table
+   add ebx, rowSize * TYPE * rowIndex
+  ----------------
+  !
+
   mul edi
   mul ecx
 
   add ebx, eax
 
+  mov ecx, [ebp + 12]   ; loop for rowSize
+  xor edx, edx          ; edx will hold the sum
 
-  mov ecx, [ebp + 12]   ;loop rowSize times
-  xor edx, edx          ;edx will hold the sum
 
-  cmp edi, 1           ; if type == 1, do byte sum
-  JE byteSum
+comment !
+If statment C++
+----------------
+if(type == 1){
+  for ( row ){
+    sum total values
+    return sum
+  }
+
+} else if (type == 2 ) {
+  for ( row ){
+    sum total values
+    return sum
+  }
+
+} else {
+  for ( row ){
+    sum total values
+    return sum
+  }
+
+}
+!
+
   cmp edi, 2           ; if type == 2, do word sum
-  JE wordSum
+  JE sumWord
+  cmp edi, 1           ; if type == 1, do byte sum
+  JE sumByte
 
-  dword_sum_Loop:      ;else if type == 4, dword sum
+  Ldword:      ; else if type == 4, dword sum
     add edx, DWORD PTR [ebx]
-    add ebx, edi     ;advance ebx
-  loop dword_sum_Loop
+    add ebx, edi     ; advance ebx
+  loop Ldword
   JMP done01
 
-  byteSum:
-    byte_sum_Loop:
-      add dl, BYTE PTR [ebx]  ;note : here the sum is saved in dl
+  sumByte:
+    Lbyte:
+      add dl, BYTE PTR [ebx]  ; sum is saved in dl
       add ebx, edi
-    loop byte_sum_Loop
+    loop Lbyte
   JMP done01
 
-  wordSum:
-    word_sum_Loop:
+  sumWord:
+    Lword:
 
-      add dx, WORD PTR [ebx]  ;note : here the sum is saved in dx
+      add dx, WORD PTR [ebx]  ; sum is saved in dx
       add ebx, edi
-    loop word_sum_Loop
+    loop Lword
 
   done01:
-    mov [ebp + 24], edx        ;store sum on stack
+    mov [ebp + 24], edx        ; store sum on stack
 
-    pop edx                    ;pop al registers off stack
+    pop edx                    ; pop al registers off stack
     pop ecx
     pop edi
     pop eax
